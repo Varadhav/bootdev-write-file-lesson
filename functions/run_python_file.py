@@ -40,23 +40,23 @@ def run_python_file(working_directory, file_path, args=[]):
         except subprocess.TimeoutExpired:
             return "Error: Process timed out after 30 seconds"
 
-        # Format the output
+        # Format the output - ALWAYS include STDOUT and STDERR sections
         output_parts = []
         
-        # Add stdout if present
-        if result.stdout:
-            output_parts.append(f"STDOUT:\n{result.stdout}")
+        # Always add STDOUT section
+        stdout_content = result.stdout if result.stdout else ""
+        output_parts.append(f"STDOUT:\n{stdout_content}")
         
-        # Add stderr if present
-        if result.stderr:
-            output_parts.append(f"STDERR:\n{result.stderr}")
+        # Always add STDERR section  
+        stderr_content = result.stderr if result.stderr else ""
+        output_parts.append(f"STDERR:\n{stderr_content}")
         
         # Add exit code if non-zero
         if result.returncode != 0:
             output_parts.append(f"Process exited with code {result.returncode}")
         
-        # Return appropriate message
-        if not output_parts:
+        # Check if both stdout and stderr are empty
+        if not result.stdout and not result.stderr:
             return "No output produced."
         else:
             return "\n".join(output_parts)
